@@ -1,8 +1,8 @@
 {
-  "name": "movieTracker",
-  "version": "0.0.2",
+  "name": "movie.tracker",
+  "version": "0.0.3",
   "private": true,
-  "homepage": "https://DarinaSavytska.github.io/movieTracker/",
+  "homepage": "https://darinasavytska.github.io/movie.tracker/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "@testing-library/jest-dom": "^6.9.1",
