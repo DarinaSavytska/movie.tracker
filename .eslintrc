@@ -1,0 +1,96 @@
+/* Happy linting! 💖 */
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "tsconfig.json",
+    "sourceType": "module",
+    "extraFileExtensions": [".json"]
+  },
+  "plugins": ["react", "prettier", "@typescript-eslint", "jsonc"],
+  "ignorePatterns": ["*manifest.json", "licenseconfig.json", "package.json"],
+  "root": true,
+  "rules": {
+    "@typescript-eslint/default-param-last": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true
+      }
+    ],
+    "@typescript-eslint/no-shadow": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/semi": "warn",
+    "@typescript-eslint/typedef": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "react/prop-types": "off",
+    "guard-for-in": "off",
+    "id-denylist": "warn",
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-named-as-default": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-console": "warn",
+    "no-extra-boolean-cast": "off",
+    "no-extra-semi": "error",
+    "no-fallthrough": "error",
+    "no-plusplus": "off",
+    "no-redeclare": "error",
+    "no-restricted-syntax": "off",
+    "no-return-await": "off",
+    "no-shadow": "off",
+    "no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["__themeState__"]
+      }
+    ],
+    "quotes": ["error", "single"],
+    "no-use-before-define": "off",
+    "no-with": "error",
+        "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["state"]
+      }
+    ],
+    "object-curly-newline": "off",
+    "prefer-destructuring": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/destructuring-assignment": "off",
+    "react/function-component-definition": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off",
+    "require-jsdoc": "off",
+    "spaced-comment": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}
