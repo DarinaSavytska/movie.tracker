@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/movieTracker/static/js/main.809139a2.js",
-    "index.html": "/movieTracker/index.html",
-    "main.809139a2.js.map": "/movieTracker/static/js/main.809139a2.js.map"
+    "main.js": "/movie.tracker/static/js/main.809139a2.js",
+    "index.html": "/movie.tracker/index.html",
+    "main.809139a2.js.map": "/movie.tracker/static/js/main.809139a2.js.map"
   },
   "entrypoints": [
     "static/js/main.809139a2.js"
