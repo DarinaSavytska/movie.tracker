@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/movieTracker/static/js/main.2c14242c.js",
+    "index.html": "/movieTracker/index.html",
+    "main.2c14242c.js.map": "/movieTracker/static/js/main.2c14242c.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.2c14242c.js"
+  ]
+}
