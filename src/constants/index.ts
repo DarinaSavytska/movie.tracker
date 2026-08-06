@@ -1,0 +1,1 @@
+export { globalConstants } from './global';
