@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sanity: any = createClient({
   projectId: '79b1z406',
   dataset: 'production',
