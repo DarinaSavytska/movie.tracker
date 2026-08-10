@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { checkSecretCode } from '../../api';
 import { sanity, checkLoginExists, checkUserInfo } from '../../utils';
+import { LocalizationContext } from '../../constants';
+import * as S from './styled';
 
 interface ILoginInfo {
   login: string;
@@ -12,6 +14,8 @@ interface IAutorization {
 }
 
 export const Autorization: React.FC<IAutorization> = ({ setIsAuthorized }) => {
+  const loc = useContext(LocalizationContext);
+
   const [loginInfo, setLoginInfo] = useState<ILoginInfo>(null);
   const [isUserExist, setIsUserExist] = useState<boolean>(true);
   const [secretCode, setSecretCode] = useState<string>('');
@@ -36,92 +40,92 @@ export const Autorization: React.FC<IAutorization> = ({ setIsAuthorized }) => {
     }
   };
 
-  return (
-    <div>
-      <div onClick={() => setIsUserExist(!isUserExist)}>Registration</div>
-      {isUserExist ? (
-        <form onSubmit={handleSubmit}>
-          <input
-            value={loginInfo?.login}
-            onChange={(e) =>
-              setLoginInfo({ ...loginInfo, login: e.target.value })
-            }
-            placeholder="Login"
-          />
-          <input
-            value={loginInfo?.password}
-            onChange={(e) =>
-              setLoginInfo({ ...loginInfo, password: e.target.value })
-            }
-            placeholder="Password"
-            type="password"
-          />
-          {isShowWrongLoginError ? <div>Wrong login or password</div> : null}
-          <button
-            type="button"
-            onClick={async () => {
-              const isUserExist = await checkUserInfo(
-                loginInfo?.login,
-                loginInfo?.password
-              );
+  const resetAllErrors = () => {
+    setIsShowSecretCodeError(false);
+    setIsShowWrongLoginError(false);
+  };
 
-              if (isUserExist) {
-                setIsAuthorized(true);
-              } else {
-                setIsShowWrongLoginError(true);
+  return (
+    <S.Container>
+      <S.Block>
+        <S.Registration
+          onClick={() => {
+            setIsUserExist(!isUserExist);
+            resetAllErrors();
+          }}
+        >
+          {isUserExist ? loc.registration : loc.signIn}
+        </S.Registration>
+        <S.FormContainer onSubmit={handleSubmit}>
+          <S.Form>
+            <input
+              value={loginInfo?.login}
+              onChange={(e) =>
+                setLoginInfo({ ...loginInfo, login: e.target.value })
               }
-            }}
-          >
-            Submit
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <input
-            value={loginInfo?.login}
-            onChange={(e) =>
-              setLoginInfo({ ...loginInfo, login: e.target.value })
-            }
-            placeholder="Login"
-          />
-          <input
-            value={loginInfo?.password}
-            onChange={(e) =>
-              setLoginInfo({ ...loginInfo, password: e.target.value })
-            }
-            type="password"
-            placeholder="Password"
-          />
-          <input
-            value={secretCode}
-            onChange={(e) => setSecretCode(e.target.value)}
-            placeholder="Secret Code"
-          />
-          {isShowSecretCodeError ? <div>Wrong secret code</div> : null}
-          {isShowWrongLoginError ? <div>Login already exists</div> : null}
+              placeholder={loc.login}
+            />
+            <input
+              value={loginInfo?.password}
+              onChange={(e) =>
+                setLoginInfo({ ...loginInfo, password: e.target.value })
+              }
+              placeholder={loc.password}
+              type="password"
+            />
+            {!isUserExist && (
+              <input
+                value={secretCode}
+                onChange={(e) => setSecretCode(e.target.value)}
+                placeholder={loc.secretCode}
+              />
+            )}
+            {isShowWrongLoginError && (
+              <S.ErrorBlock>
+                {isUserExist
+                  ? loc.wrongLoginOrPassword
+                  : loc.loginAlreadyExists}
+              </S.ErrorBlock>
+            )}
+            {isShowSecretCodeError ? (
+              <S.ErrorBlock>{loc.wrongSecretCode}</S.ErrorBlock>
+            ) : null}
+          </S.Form>
           <button
             type="button"
             onClick={async (e) => {
-              setIsShowSecretCodeError(false);
-              setIsShowWrongLoginError(false);
+              if (isUserExist) {
+                const isUserExist = await checkUserInfo(
+                  loginInfo?.login,
+                  loginInfo?.password
+                );
 
-              const isCodeCorrect = (await checkSecretCode(secretCode))
-                ?.success;
-              const isLoginExists = await checkLoginExists(loginInfo?.login);
-
-              if (isLoginExists) {
-                setIsShowWrongLoginError(true);
-              } else if (isCodeCorrect) {
-                handleSubmit(e);
+                if (isUserExist) {
+                  setIsAuthorized(true);
+                } else {
+                  setIsShowWrongLoginError(true);
+                }
               } else {
-                setIsShowSecretCodeError(true);
+                resetAllErrors();
+
+                const isCodeCorrect = (await checkSecretCode(secretCode))
+                  ?.success;
+                const isLoginExists = await checkLoginExists(loginInfo?.login);
+
+                if (isLoginExists) {
+                  setIsShowWrongLoginError(true);
+                } else if (isCodeCorrect) {
+                  handleSubmit(e);
+                } else {
+                  setIsShowSecretCodeError(true);
+                }
               }
             }}
           >
-            Registration
+            {isUserExist ? loc.signIn : loc.registration}
           </button>
-        </form>
-      )}
-    </div>
+        </S.FormContainer>
+      </S.Block>
+    </S.Container>
   );
 };
