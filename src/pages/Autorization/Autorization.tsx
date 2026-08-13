@@ -1,8 +1,10 @@
 import { useContext, useState } from 'react';
-import { checkSecretCode } from '../../api';
-import { sanity, checkLoginExists, checkUserInfo } from '../../utils';
-import { LocalizationContext } from '../../constants';
+// styles
 import * as S from './styled';
+// other
+import { sanity, checkLoginExists, checkUserInfo } from '../../utils';
+import { checkSecretCode } from '../../api';
+import { LocalizationContext } from '../../constants';
 
 interface ILoginInfo {
   login: string;

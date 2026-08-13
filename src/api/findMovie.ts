@@ -15,7 +15,7 @@ export const findMovie = async (query: string, page: number) => {
     return data;
   } catch (err) {
     console.error('Error fetching:', err);
-  }
 
-  return null;
+    return err;
+  }
 };

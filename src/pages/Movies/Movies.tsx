@@ -1,23 +1,28 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+// styles
+import * as S from './styled';
+// types
+import { IFindedMovies } from './types';
+// other
+import { globalConstants, LocalizationContext } from '../../constants';
 import { findMovie } from '../../api';
 
 export const Movies: React.FC = () => {
+  const loc = useContext(LocalizationContext);
+
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [findedMovies, setFindedMovies] = useState<
-    {
-      imdbID: string;
-      Title: string;
-      Poster: string;
-    }[]
-  >([]);
+  const [findedMovies, setFindedMovies] = useState<IFindedMovies[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalResults, setTotalResults] = useState<number>(0);
+  const [error, setError] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent, page: number) => {
     e.preventDefault();
 
     try {
       const result = await findMovie(searchQuery, page);
+
+      setError(result?.Error || '');
 
       return result;
     } catch (err) {
@@ -29,36 +34,42 @@ export const Movies: React.FC = () => {
 
   return (
     <div>
-      <form
-        onSubmit={async (e) => {
-          const result = await handleSubmit(e, 1);
+      <S.FormContainer>
+        <S.Form
+          onSubmit={async (e) => {
+            const result = await handleSubmit(e, 1);
 
-          setPage(1);
-          setFindedMovies(result.Search);
-          setTotalResults(result.totalResults);
-        }}
-      >
-        <input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search movies..."
-        />
-        <button type="submit">Submit</button>
-      </form>
-      <div>
+            setPage(1);
+            setFindedMovies(result.Search);
+            setTotalResults(result.totalResults);
+          }}
+        >
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={loc.min3Char}
+          />
+          <button type="submit">{loc.searchMovies}</button>
+        </S.Form>
+        {error?.length ? <S.ErrorText>{error}</S.ErrorText> : null}
+      </S.FormContainer>
+      <S.MoviesContainer>
         {findedMovies?.length ? (
-          <ul>
+          <S.MoviesList>
             {findedMovies.map((movie) => (
-              <li key={movie.imdbID}>
-                <div>{movie.Title}</div>
-                <img
-                  src={movie.Poster}
+              <S.MovieItem key={movie.imdbID}>
+                <S.MovieTitle>{movie.Title}</S.MovieTitle>
+                <S.MobieImg
+                  src={
+                    movie.Poster !== 'N/A'
+                      ? movie.Poster
+                      : globalConstants.bookImg
+                  }
                   alt={movie.Title}
-                  style={{ width: '20%' }}
                 />
-              </li>
+              </S.MovieItem>
             ))}
-          </ul>
+          </S.MoviesList>
         ) : null}
         {totalResults > findedMovies?.length && (
           <button
@@ -71,10 +82,10 @@ export const Movies: React.FC = () => {
               setFindedMovies([...findedMovies, ...result.Search]);
             }}
           >
-            Load More
+            {loc.loadMore}
           </button>
         )}
-      </div>
+      </S.MoviesContainer>
     </div>
   );
 };
