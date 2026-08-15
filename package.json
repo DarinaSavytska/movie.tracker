@@ -1,6 +1,6 @@
 {
   "name": "movie.tracker",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",

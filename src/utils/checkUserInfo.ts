@@ -9,7 +9,7 @@ export const checkUserInfo = async (login: string, password: string) => {
     const result = await sanity.fetch(query, params);
 
     if (result) {
-      return true;
+      return result;
     }
 
     return false;

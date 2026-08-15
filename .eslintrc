@@ -62,7 +62,7 @@
     "no-return-await": "off",
     "no-shadow": "off",
     "no-underscore-dangle": [
-      "error",
+      "off",
       {
         "allow": ["__themeState__"],
       },

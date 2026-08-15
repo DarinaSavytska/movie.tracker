@@ -1,21 +1,22 @@
 import { useContext, useState } from 'react';
 // styles
 import * as S from './styled';
+// types
+import { ILoginInfo } from '../../types';
 // other
 import { sanity, checkLoginExists, checkUserInfo } from '../../utils';
 import { checkSecretCode } from '../../api';
 import { LocalizationContext } from '../../constants';
 
-interface ILoginInfo {
-  login: string;
-  password: string;
-}
-
 interface IAutorization {
   setIsAuthorized: (isAuthorized: boolean) => void;
+  setUserInfo: (userInfo: ILoginInfo) => void;
 }
 
-export const Autorization: React.FC<IAutorization> = ({ setIsAuthorized }) => {
+export const Autorization: React.FC<IAutorization> = ({
+  setIsAuthorized,
+  setUserInfo,
+}) => {
   const loc = useContext(LocalizationContext);
 
   const [loginInfo, setLoginInfo] = useState<ILoginInfo>(null);
@@ -34,9 +35,10 @@ export const Autorization: React.FC<IAutorization> = ({ setIsAuthorized }) => {
         _type: 'autorization',
         ...loginInfo,
         publishedAt: new Date().toISOString(),
+        id: new Date().getTime(),
       });
 
-      setIsAuthorized(true);
+      setIsUserExist(true);
     } catch (err) {
       console.error(err);
     }
@@ -97,13 +99,14 @@ export const Autorization: React.FC<IAutorization> = ({ setIsAuthorized }) => {
             type="button"
             onClick={async (e) => {
               if (isUserExist) {
-                const isUserExist = await checkUserInfo(
+                const userExist = await checkUserInfo(
                   loginInfo?.login,
                   loginInfo?.password
                 );
 
-                if (isUserExist) {
+                if (userExist) {
                   setIsAuthorized(true);
+                  setUserInfo(userExist);
                 } else {
                   setIsShowWrongLoginError(true);
                 }

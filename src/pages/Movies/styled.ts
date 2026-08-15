@@ -54,6 +54,6 @@ export const MovieTitle = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-export const MobieImg = styled.img`
+export const MovieImg = styled.img`
   width: 100%;
 `;
