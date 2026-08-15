@@ -4,18 +4,13 @@ import { Movie } from '../Movie';
 // styles
 import * as S from './styled';
 // types
-import { ILoginInfo, IFindedMovie } from '../../types';
+import { IFindedMovie } from '../../types';
 // other
-import {
-  globalConstants,
-  LocalizationContext,
-  UserInfoContext,
-} from '../../constants';
-import { findMovie, getUserMovies } from '../../api';
+import { globalConstants, LocalizationContext } from '../../constants';
+import { findMovie } from '../../api';
 
 export const Movies: React.FC = () => {
   const loc = useContext(LocalizationContext);
-  const userInfo = useContext<ILoginInfo>(UserInfoContext);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [findedMovies, setFindedMovies] = useState<IFindedMovie[]>([]);
@@ -58,7 +53,7 @@ export const Movies: React.FC = () => {
             placeholder={loc.min3Char}
           />
           <button type="submit">{loc.searchMovies}</button>
-          <button
+          {/* <button
             type="button"
             onClick={async () => {
               const test = await getUserMovies(userInfo?.id);
@@ -67,7 +62,7 @@ export const Movies: React.FC = () => {
             }}
           >
             test
-          </button>
+          </button> */}
         </S.Form>
         {error?.length ? <S.ErrorText>{error}</S.ErrorText> : null}
       </S.FormContainer>

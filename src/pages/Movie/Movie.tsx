@@ -35,7 +35,7 @@ export const Movie: React.FC<IMovie> = ({
 
     try {
       if (hasMovieInList || hasMovieInListUpdated) {
-        console.log('need update');
+        updateMovies(); // dont need
       } else {
         if (!allUserMovies) {
           await sanity.create({
