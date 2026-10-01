@@ -1,11 +1,9 @@
-import { globalConstants } from '../constants';
-
 export const findMovie = async (query: string, page: number) => {
   try {
-    const res = await fetch(`${globalConstants.mainUrl}/api/searchMovies`, {
-      method: 'POST',
+    const res = await fetch(`/api/searchMovies`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ query, page }),
     });
@@ -14,7 +12,7 @@ export const findMovie = async (query: string, page: number) => {
 
     return data;
   } catch (err) {
-    console.error('Error fetching:', err);
+    console.error("Error fetching:", err);
 
     return err;
   }

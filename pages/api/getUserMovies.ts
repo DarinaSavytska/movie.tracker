@@ -1,4 +1,4 @@
-import { sanity } from '../utils';
+import { sanity } from "../../src/utils";
 
 export const getUserMovies = async (id: number) => {
   try {
@@ -13,7 +13,7 @@ export const getUserMovies = async (id: number) => {
 
     return false;
   } catch (err) {
-    console.error('Помилка при запиті:', err);
+    console.error("Помилка при запиті:", err);
     return false;
   }
 };

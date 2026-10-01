@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+/* eslint-disable @next/next/no-img-element */
+import { useContext, useMemo, useState } from 'react';
 // types
 import { IFindedMovie, ILoginInfo, IUserMovies } from '../../types';
 // other
@@ -12,23 +13,28 @@ import { sanity } from '../../utils';
 
 interface IMovie {
   selectedMovie: IFindedMovie;
-  setSelectedMovie: (selectedMovie: IFindedMovie) => void;
+  setSelectedMovie: (selectedMovie: IFindedMovie | null) => void;
 }
 
 export const Movie: React.FC<IMovie> = ({
   selectedMovie,
   setSelectedMovie,
 }) => {
-  const allUserMovies = useContext<IUserMovies>(MoviesContext);
-  const userInfo = useContext<ILoginInfo>(UserInfoContext);
+  const allUserMovies = useContext<IUserMovies | null>(MoviesContext);
+  const userInfo = useContext<ILoginInfo | null>(UserInfoContext);
   const updateMovies = useContext(IsUpdateMoviesContext);
 
   const hasMovieInList = allUserMovies?.movies?.find(
     (movie) => movie.id === selectedMovie.imdbID
   );
 
-  const [hasMovieInListUpdated, setHasMovieInListUpdated] = useState(null);
-  const [isWatched, setIsWatched] = useState<boolean>(hasMovieInList?.watched);
+  const [isWatched, setIsWatched] = useState<boolean>(!!hasMovieInList?.watched);
+
+
+  const hasMovieInListUpdated = useMemo(
+    () => allUserMovies?.movies?.find((movie) => movie.id === selectedMovie.imdbID),
+    [allUserMovies, selectedMovie.imdbID]
+  );
 
   const onChange = async () => {
     setIsWatched(!isWatched);
@@ -37,7 +43,7 @@ export const Movie: React.FC<IMovie> = ({
       if (hasMovieInList || hasMovieInListUpdated) {
         updateMovies(); // dont need
       } else {
-        if (!allUserMovies) {
+        if (!(allUserMovies as IUserMovies)) {
           await sanity.create({
             _id: allUserMovies?._id,
             _type: 'user',
@@ -49,6 +55,7 @@ export const Movie: React.FC<IMovie> = ({
                 _key: selectedMovie.imdbID,
                 title: selectedMovie.Title,
                 id: selectedMovie.imdbID,
+                poster: selectedMovie.Poster,
                 watchedAt: new Date().toISOString(),
                 watched: true,
               },
@@ -64,6 +71,7 @@ export const Movie: React.FC<IMovie> = ({
               _key: selectedMovie.imdbID,
               title: selectedMovie.Title,
               id: selectedMovie.imdbID,
+              poster: selectedMovie.Poster,
               watchedAt: new Date().toISOString(),
               watched: true,
             },
@@ -76,12 +84,6 @@ export const Movie: React.FC<IMovie> = ({
       console.error(err);
     }
   };
-
-  useEffect(() => {
-    setHasMovieInListUpdated(
-      allUserMovies?.movies?.find((movie) => movie.id === selectedMovie.imdbID)
-    );
-  }, [allUserMovies]);
 
   return (
     <div>

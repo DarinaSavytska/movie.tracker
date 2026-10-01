@@ -1,11 +1,13 @@
+'use client'
+
 import { useContext, useState } from 'react';
 // styles
 import * as S from './styled';
 // types
 import { ILoginInfo } from '../../types';
 // other
-import { sanity, checkLoginExists, checkUserInfo } from '../../utils';
-import { checkSecretCode } from '../../api';
+import { checkLoginExists } from '../../utils';
+import { checkSecretCode, registerUser, checkUserInfo } from '../../api';
 import { LocalizationContext } from '../../constants';
 
 interface IAutorization {
@@ -19,7 +21,7 @@ export const Autorization: React.FC<IAutorization> = ({
 }) => {
   const loc = useContext(LocalizationContext);
 
-  const [loginInfo, setLoginInfo] = useState<ILoginInfo>(null);
+  const [loginInfo, setLoginInfo] = useState<Partial<ILoginInfo>>({});
   const [isUserExist, setIsUserExist] = useState<boolean>(true);
   const [secretCode, setSecretCode] = useState<string>('');
   const [isShowSecretCodeError, setIsShowSecretCodeError] =
@@ -27,26 +29,43 @@ export const Autorization: React.FC<IAutorization> = ({
   const [isShowWrongLoginError, setIsShowWrongLoginError] =
     useState<boolean>(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await sanity.create({
-        _type: 'autorization',
-        ...loginInfo,
-        publishedAt: new Date().toISOString(),
-        id: new Date().getTime(),
-      });
-
-      setIsUserExist(true);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const resetAllErrors = () => {
     setIsShowSecretCodeError(false);
     setIsShowWrongLoginError(false);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isUserExist) {
+      // const userExist = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ login: loginInfo.login, password: loginInfo.password }) })
+      const userExist = await checkUserInfo(
+        loginInfo.login as string,
+        loginInfo.password as string
+      );
+
+      console.log('userExist', userExist);
+
+      if (userExist) {
+        setIsAuthorized(true);
+        setUserInfo(userExist);
+      } else {
+        setIsShowWrongLoginError(true);
+      }
+    } else {
+      resetAllErrors();
+
+      const isCodeCorrect = (await checkSecretCode(secretCode))?.success;
+      const isLoginExists = await checkLoginExists(loginInfo.login as string);
+
+      if (isLoginExists) {
+        setIsShowWrongLoginError(true);
+      } else if (isCodeCorrect) {
+        await registerUser(loginInfo as ILoginInfo, setIsUserExist);
+      } else {
+        setIsShowSecretCodeError(true);
+      }
+    }
   };
 
   return (
@@ -60,17 +79,17 @@ export const Autorization: React.FC<IAutorization> = ({
         >
           {isUserExist ? loc.registration : loc.signIn}
         </S.Registration>
-        <S.FormContainer onSubmit={handleSubmit}>
+        <S.FormContainer onSubmit={handleFormSubmit}>
           <S.Form>
             <input
-              value={loginInfo?.login}
+              value={loginInfo.login ?? ''}
               onChange={(e) =>
                 setLoginInfo({ ...loginInfo, login: e.target.value })
               }
               placeholder={loc.login}
             />
             <input
-              value={loginInfo?.password}
+              value={loginInfo.password ?? ''}
               onChange={(e) =>
                 setLoginInfo({ ...loginInfo, password: e.target.value })
               }
@@ -95,38 +114,7 @@ export const Autorization: React.FC<IAutorization> = ({
               <S.ErrorBlock>{loc.wrongSecretCode}</S.ErrorBlock>
             ) : null}
           </S.Form>
-          <button
-            type="button"
-            onClick={async (e) => {
-              if (isUserExist) {
-                const userExist = await checkUserInfo(
-                  loginInfo?.login,
-                  loginInfo?.password
-                );
-
-                if (userExist) {
-                  setIsAuthorized(true);
-                  setUserInfo(userExist);
-                } else {
-                  setIsShowWrongLoginError(true);
-                }
-              } else {
-                resetAllErrors();
-
-                const isCodeCorrect = (await checkSecretCode(secretCode))
-                  ?.success;
-                const isLoginExists = await checkLoginExists(loginInfo?.login);
-
-                if (isLoginExists) {
-                  setIsShowWrongLoginError(true);
-                } else if (isCodeCorrect) {
-                  handleSubmit(e);
-                } else {
-                  setIsShowSecretCodeError(true);
-                }
-              }
-            }}
-          >
+          <button type="submit">
             {isUserExist ? loc.signIn : loc.registration}
           </button>
         </S.FormContainer>

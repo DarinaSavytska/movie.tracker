@@ -3,6 +3,7 @@ interface IMovie {
   title: string;
   watched: boolean;
   watchedAt: string;
+  poster: string;
 }
 
 interface ISearial {
@@ -15,6 +16,7 @@ interface ISearial {
       title: string;
       watched: boolean;
       watchedAt: string;
+      poster: string;
     }[];
   }[];
   title: string;

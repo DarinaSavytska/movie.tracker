@@ -1,11 +1,9 @@
-import { globalConstants } from '../constants';
-
 export const checkSecretCode = async (secretCode: string) => {
   try {
-    const res = await fetch(`${globalConstants.mainUrl}/api/secretCode`, {
-      method: 'POST',
+    const res = await fetch(`/api/secretCode`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ secretCode }),
     });
@@ -14,7 +12,7 @@ export const checkSecretCode = async (secretCode: string) => {
 
     return data;
   } catch (err) {
-    console.error('Error fetching:', err);
+    console.error("Error fetching:", err);
   }
 
   return null;

@@ -4,20 +4,25 @@ import { Movie } from '../Movie';
 // styles
 import * as S from './styled';
 // types
-import { IFindedMovie } from '../../types';
+import { IFindedMovie, ILoginInfo } from '../../types';
 // other
-import { globalConstants, LocalizationContext } from '../../constants';
-import { findMovie } from '../../api';
+import {
+  globalConstants,
+  LocalizationContext,
+  UserInfoContext,
+} from '../../constants';
+import { findMovie, getUserMovies } from '../../api';
 
 export const Movies: React.FC = () => {
   const loc = useContext(LocalizationContext);
+  const userInfo = useContext<ILoginInfo | null>(UserInfoContext);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [findedMovies, setFindedMovies] = useState<IFindedMovie[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalResults, setTotalResults] = useState<number>(0);
   const [error, setError] = useState<string>('');
-  const [selectedMovie, setSelectedMovie] = useState<IFindedMovie>(null);
+  const [selectedMovie, setSelectedMovie] = useState<IFindedMovie | null>(null);
 
   const handleSubmit = async (e: React.FormEvent, page: number) => {
     e.preventDefault();
@@ -53,16 +58,16 @@ export const Movies: React.FC = () => {
             placeholder={loc.min3Char}
           />
           <button type="submit">{loc.searchMovies}</button>
-          {/* <button
+          <button
             type="button"
             onClick={async () => {
-              const test = await getUserMovies(userInfo?.id);
+              const test = await getUserMovies(Number(userInfo?.id));
 
               console.log('test', test);
             }}
           >
             test
-          </button> */}
+          </button>
         </S.Form>
         {error?.length ? <S.ErrorText>{error}</S.ErrorText> : null}
       </S.FormContainer>
