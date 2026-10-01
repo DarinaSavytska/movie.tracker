@@ -6,8 +6,8 @@ import * as S from './styled';
 // types
 import { ILoginInfo } from '../../types';
 // other
-import { checkLoginExists } from '../../utils';
-import { checkSecretCode, registerUser, checkUserInfo } from '../../api';
+import { checkLoginExists, checkUserInfo, registerUser } from '../../utils';
+import { checkSecretCode } from '../../api';
 import { LocalizationContext } from '../../constants';
 
 interface IAutorization {

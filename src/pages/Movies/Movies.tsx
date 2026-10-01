@@ -11,7 +11,8 @@ import {
   LocalizationContext,
   UserInfoContext,
 } from '../../constants';
-import { findMovie, getUserMovies } from '../../api';
+import { findMovie } from '@/src/api';
+import { getUserMovies } from '@/src/utils';
 
 export const Movies: React.FC = () => {
   const loc = useContext(LocalizationContext);

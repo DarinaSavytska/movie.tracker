@@ -13,7 +13,7 @@ import {
   UserInfoContext,
 } from './constants';
 import { engLoc } from './localization';
-import { getUserMovies } from './api';
+import { getUserMovies } from './utils';
 
 export const App: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
