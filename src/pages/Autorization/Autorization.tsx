@@ -38,13 +38,18 @@ export const Autorization: React.FC<IAutorization> = ({
     e.preventDefault();
 
     if (isUserExist) {
-      // const userExist = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ login: loginInfo.login, password: loginInfo.password }) })
       const userExist = await checkUserInfo(
         loginInfo.login as string,
         loginInfo.password as string
       );
 
-      console.log('userExist', userExist);
+      await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userExist),
+      });
 
       if (userExist) {
         setIsAuthorized(true);
@@ -87,6 +92,7 @@ export const Autorization: React.FC<IAutorization> = ({
                 setLoginInfo({ ...loginInfo, login: e.target.value })
               }
               placeholder={loc.login}
+              autoComplete="username"
             />
             <input
               value={loginInfo.password ?? ''}
@@ -95,6 +101,7 @@ export const Autorization: React.FC<IAutorization> = ({
               }
               placeholder={loc.password}
               type="password"
+              autoComplete={isUserExist ? "current-password" : "new-password"}
             />
             {!isUserExist && (
               <input

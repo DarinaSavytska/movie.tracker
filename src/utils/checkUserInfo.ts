@@ -1,5 +1,5 @@
-import { sanity } from "@/src/utils/sanityClient";
-import bcrypt from "bcryptjs";
+import { sanity } from '@/src/utils/sanityClient';
+import bcrypt from 'bcryptjs';
 
 export const checkUserInfo = async (login: string, password: string) => {
   try {
@@ -20,7 +20,7 @@ export const checkUserInfo = async (login: string, password: string) => {
 
     return false;
   } catch (err) {
-    console.error("Помилка при запиті:", err);
+    console.error('Помилка при запиті:', err);
     return false;
   }
 };

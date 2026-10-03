@@ -7,8 +7,6 @@ export default async function handler(
 ) {
   const userId = req.cookies.userId;
 
-  // console.log("req.cookies", req.cookies);
-
   if (!userId) {
     return res.status(401).json({ user: null });
   }

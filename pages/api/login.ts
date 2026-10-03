@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { checkUserInfo } from '@/src/utils';
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,19 +8,15 @@ export default async function handler(
     return res.status(405).end();
   }
 
-  const { login, password } = req.body;
+  const { _id } = req.body;
 
-  const user = await checkUserInfo(login, password);
-
-  console.log('user', user);
-
-  if (user) {
+  if (_id) {
     res.setHeader(
       'Set-Cookie',
-      `userId=${user._id}; Path=/; HttpOnly; SameSite=Strict`
+      `userId=${_id}; Path=/; HttpOnly; SameSite=Strict`
     );
 
-    return res.status(200).json({ success: true, user });
+    return res.status(200).json({ success: true, _id });
   }
 
   return res.status(401).json({ success: false });

@@ -20,36 +20,37 @@ export const App: React.FC = () => {
   const [userInfo, setUserInfo] = useState<ILoginInfo | null>(null);
   const [allUserMovies, setAllUserMovies] = useState<IUserMovies | null>(null);
   const [isUpdateAllMovies, setIsUpdateAllMovies] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const updateMovies = useCallback(() => {
     setIsUpdateAllMovies((prev) => !prev);
   }, [setIsUpdateAllMovies]);
 
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     try {
-  //       const res = await fetch('/api/me');
-  //       const data = await res.json();
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/me');
+        const data = await res.json();
 
-  //       if (data.user) {
-  //         setIsAuthorized(true);
-  //         setUserInfo(data.user);
-  //       }
-  //     } catch (err) {
-  //       console.error('Помилка перевірки авторизації:', err);
-  //     } finally {
-  //       // setIsLoading(false);
-  //     }
-  //   };
+        if (data.user) {
+          setIsAuthorized(true);
+          setUserInfo(data.user);
+        }
+      } catch (err) {
+        console.error('Помилка перевірки авторизації:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   checkAuth();
-  // }, []);
+    checkAuth();
+  }, []);
 
-  //   const handleLogout = async () => {
-  //   await fetch('/api/logout', { method: 'POST' });
-  //   setIsAuthorized(false);
-  //   setUserInfo(null);
-  // };
+  const handleLogout = async () => {
+    await fetch('/api/logout', { method: 'POST' });
+    setIsAuthorized(false);
+    setUserInfo(null);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,14 +69,21 @@ export const App: React.FC = () => {
       <MoviesContext.Provider value={allUserMovies}>
         <UserInfoContext.Provider value={userInfo}>
           <IsUpdateMoviesContext.Provider value={updateMovies}>
-            {isAuthorized ? (
-              <Movies />
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (isAuthorized ? (
+              <div>
+                <Movies />
+                <button type="button" style={{ zIndex: 1, position: 'absolute' }} onClick={handleLogout}>
+                  Log out
+                </button>
+              </div>
             ) : (
               <Autorization
                 setIsAuthorized={setIsAuthorized}
                 setUserInfo={setUserInfo}
               />
-            )}
+            ))}
           </IsUpdateMoviesContext.Provider>
         </UserInfoContext.Provider>
       </MoviesContext.Provider>
