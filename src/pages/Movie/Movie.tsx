@@ -41,7 +41,24 @@ export const Movie: React.FC<IMovie> = ({
 
     try {
       if (hasMovieInList || hasMovieInListUpdated) {
-        updateMovies(); // dont need
+        const movieId = hasMovieInList?.id;
+        const path = `movies[_key=="${movieId}"]`;
+
+        let patch = sanity.patch((allUserMovies as IUserMovies)._id);
+
+        if (!hasMovieInList?.watched) {
+          patch = patch.set({
+            [`${path}.watched`]: true,
+            [`${path}.watchedAt`]: new Date().toISOString(),
+          });
+        } else {
+          patch = patch
+            .set({ [`${path}.watched`]: false })
+            .unset([`${path}.watchedAt`]);
+        }
+
+        await patch.commit();
+        updateMovies();
       } else {
         if (!(allUserMovies as IUserMovies)) {
           await sanity.create({
@@ -118,6 +135,7 @@ export const Movie: React.FC<IMovie> = ({
               id="scales"
               name="scales"
               checked={isWatched}
+              onChange={onChange}
             />
             Watched
           </div>
